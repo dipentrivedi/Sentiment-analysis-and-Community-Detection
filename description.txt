@@ -1,0 +1,94 @@
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+Prerequisites: 
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+Python Libraries: 
+	* TwitterAPI import TwitterAPI
+	* requests
+	* bs4 import BeautifulSoup
+	* re
+	* sys
+	* time
+	* os
+	* numpy as np
+	* six.moves import configparser
+	* networkx as nx
+	* math
+	* glob
+	* from sklearn.cross_validation import KFold
+	* from sklearn.feature_extraction.text import CountVectorizer
+	* from sklearn.linear_model import LogisticRegression
+	* import nltk
+	* from nltk.corpus import sentiwordnet
+__________________________________________________________________________________________________________________________________________________________
+**NOTE: Follwing data is collected from the latest run and is subjected to change on the next run.
+__________________________________________________________________________________________________________________________________________________________
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+Code Descriptions: 
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+1. collect.py :
+
+	* Description:
+	- This file collects data for cluster.py and classify.py
+	- twitter.cfg is used to store the twitter credentials.
+	- For cluster, tried to get top 100 twitter user from the http://twittercounter.com/pages/100 website. Used BeautifulSoup to web scrap the website
+	  and collect the data. For community detection collected friends of the above 100 users from the twitter and stored it in the user_friends.txt file
+	  which gave around.
+	- For classification, collecting movie reviews from the rottontomatoes.com’s top 100 movies. https://www.rottentomatoes.com/top/bestofrt/. Used 
+	  BeautifulSoup to web scrap the website and collect the data.
+	- In sort, collect.py creates raw data for cluster.py and classify.py.
+
+	* Running Time:
+	- Running time of the collect.py is 30-40 mins, because of the twitter requests limits. 
+
+2. cluster.py :
+
+	* Description:
+	- This file does clustering on the user-friend data collected from the collect.py and does the community detection using the Girvan Newman community
+	  detection algorithm. 
+	- After running cluster.py, girvan newman creates 5336 communities, of course there will be some communities with just 1 user.
+	- Considering the top 50 communities from the pool of the 5336 communities, got 197 average users per communities.
+
+	* Running Time:
+	- Running time of the cluster.py is between 2-3 mins. 
+
+3. classify.py :
+
+	* Description:
+	- This file does sentiment analysis and classification on the movie reviews collected from the collect.py.
+	- Used nltk library for sentiment analysis of the movie review. Created Pos and Neg data according to the sentiment scores of the review.
+	- Used K-Fold cross validation algorithm for training and testing the data and for the classification used logistic regression.
+	- Test accuracy of the model is between 0.71-0.73 and Train accuracy of the model is 0.99.
+
+	* Running Time:
+	- Running time of the cluster.py is between 15-20 secs. 
+
+4. summarize.py
+
+
+	* Description:
+
+	- This file creates summary.txt file, which contains the summary of the results got from cluster.py and classify.py.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+Conclusion:
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+	- In this assignment, I did community detection using Girvan-Newman algorithm, sentiment analysis using nltk library and created the classifier that
+	  separate the positive and negative movie reviews.
+
+	- In collect.py file, I tried to collect top 100 most popular twitter users and took their friends to create data for cluster.py file. I collected 
+	  total 1919 users. For classify.py I wanted to collect movie reviews. So, used www.rottentomatoes.com to get their top 100 movies in all genres and
+	  collected top 12 critic reviews. I collected total 1200 reviews by web-scraping the web pages.
+
+	- In cluster.py file, I created a graph with 1819 edges using the top 100 twitter users and their respective friends.  I used Girvan-Newman for 
+	  community detection. Used highest betweenness score to remove the edges and recursively ran the algorithm to create the communities. This 
+	  algorithm created 5336 communities with 9850 users, taking the average gave approximately 197 users/community.
+	 
+	- In classify.py file, I used sentiwordnet module from nltk library to do sentiment analysis on 1200 movie reviews and divided the reviews with 
+	  their positive and negative sentiment scores. This analysis gave me 780 positive reviews, 331 negative reviews and 89 neutral reviews. After 
+	  sentiment analysis, I used CountVectorizer from sklearn library for vectorization and created the feature matrix on total data(positive+negative 
+	  data),where rows represent documents and columns represents features. Used KFold from sklearn to create training and testing data and used 
+	  LogisticRegression algorithm from sklearn to find the average crossvalidation accuracy. Test accuracy of the model is between 0.71-0.73 and 
+	  Train accuracy of the model is 0.99.
+
